@@ -8,6 +8,7 @@ import geopandas as gpd
 import pyarrow as pa
 import pyarrow.parquet as pq
 from pytz import timezone
+import os
 
 
 with zipfile.ZipFile(
@@ -91,6 +92,8 @@ with zipfile.ZipFile(
         #).set_crs(4326)
 
         # df_g.to_parquet(f"/home/pierre/Documents/strava/data/test/{nameFile}.parquet")
+        if not os.path.isdir('/home/pierre/Documents/strava/data/parquet'):
+            os.makedirs('/home/pierre/Documents/strava/data/parquet')
         pq.write_table(
             pa.Table.from_pandas(df),
             f"/home/pierre/Documents/strava/data/parquet/{nameFile}.parquet",
@@ -98,6 +101,9 @@ with zipfile.ZipFile(
 
     with zf.open("activities.csv", "r") as f:
         df = pd.read_csv(f)
+
+    if not os.path.isdir('/home/pierre/Documents/strava/data/geoparquet'):
+        os.makedirs('/home/pierre/Documents/strava/data/geoparquet')
 
     pq.write_table(
         pa.Table.from_pandas(df),
