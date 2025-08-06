@@ -79,3 +79,16 @@ leaflet(d_ag) %>%
     addPolylines(weight = 2, col = "blue") %>%
     #addProviderTiles("OpenTopoMap")
     addProviderTiles("Esri.WorldGrayCanvas")
+
+distance <- d  |> 
+    mutate(mois = str_pad(as.integer(month(time)), 2, pad = "0"),
+           annee = as.character(as.integer(year(time)))) |>
+    group_by(id, annee, mois) |> 
+    summarise(geometry = st_combine(geometry)) |> 
+    st_cast("LINESTRING") |>
+    mutate(distance = as.numeric(st_length(geometry))/1000) |>
+    as_tibble() |>
+    group_by(annee, mois) |>
+    summarise(distance = sum(distance)) |>
+    group_by(annee) |>
+    mutate(distance_cumulee = cumsum(distance))
