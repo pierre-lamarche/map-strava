@@ -55,9 +55,7 @@ for (fichier in liste_fichiers) {
 
 
 liste_fichiers <- list.files("/home/pierre/Documents/strava/data/geoparquet/", pattern = "\\d+\\.parquet", full.names = TRUE)
-metadonnees <- read_parquet("/home/pierre/Documents/strava/data/geoparquet/metadonnees.parquet") %>% 
-  select(`ID de l'activité`, `Date de l'activité`, `Nom de l'activité`, `Nom du fichier`) %>% 
-  mutate(id = str_extract(`Nom du fichier`, "activities/(\\d+)\\.(gpx|fit\\.gz)$", group = 1))
+metadonnees <- read_parquet("/home/pierre/Documents/strava/data/geoparquet/metadonnees.parquet")
 d <- Reduce(bind_rows, lapply(liste_fichiers, st_read_parquet)) %>% 
   arrange(time) %>% 
   mutate(jour = format(time, "%Y-%m-%d")) %>% 

@@ -50,12 +50,12 @@ with zipfile.ZipFile(
                                 "id": nameFile,
                                 "longitude": (
                                     frame.get_value("position_long") / ((2**32) / 360)
-                                    if frame.has_field("position_long")
+                                    if frame.has_field("position_long") and frame.get_value("position_long") is not None
                                     else None
                                 ),
                                 "latitude": (
                                     frame.get_value("position_lat") / ((2**32) / 360)
-                                    if frame.has_field("position_lat")
+                                    if frame.has_field("position_lat") and frame.get_value("position_lat") is not None
                                     else None
                                 ),
                                 "time": (
@@ -71,7 +71,7 @@ with zipfile.ZipFile(
                                 ),
                                 "speed": (
                                     frame.get_value("speed")*3.6
-                                    if frame.has_field("speed")
+                                    if frame.has_field("speed") and frame.get_value("speed") is not None
                                     else None
                                 ),
                                 "altitude": (
@@ -81,7 +81,7 @@ with zipfile.ZipFile(
                                 ),
                                 "enhanced_speed": (
                                     frame.get_value("enhanced_speed")*3.6
-                                    if frame.has_field("enhanced_speed")
+                                    if frame.has_field("enhanced_speed") and frame.get_value("enhanced_speed") is not None
                                     else None
                                 ),
                                 "enhanced_altitude": (
@@ -114,7 +114,10 @@ with zipfile.ZipFile(
         )
 
     with zf.open("activities.csv", "r") as f:
-        df = pd.read_csv(f)
+        df = pd.read_csv(f, 
+        usecols=[0,1, 2, 3, 6],
+        header=None, 
+        names=["id", "date", "nom", "type", "distance"])
 
     if not os.path.isdir("/home/pierre/Documents/strava/data/geoparquet"):
         os.makedirs("/home/pierre/Documents/strava/data/geoparquet")
