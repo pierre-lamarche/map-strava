@@ -35,7 +35,7 @@ def noms_activites(chemin_zip: str) -> pd.DataFrame:
     """
     with zipfile.ZipFile(chemin_zip) as z:
         with z.open("activities.csv") as f:
-            df = pd.read_csv(f, usecols=["Nom de l'activité", "Type d'activité", "Nom du fichier"])
+            df = pd.read_csv(f, usecols=["Activity Name", "Activity Type", "Filename"])
     df.columns = ["nom", "type", "fichier_zip"]
     df["id"] = df["fichier_zip"].str.extract(r"(\d+)")
     return df.set_index("id")[["nom", "type"]]
